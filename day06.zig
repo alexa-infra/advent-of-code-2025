@@ -1,7 +1,7 @@
 const std = @import("std");
 const utils = @import("./utils.zig");
 
-const read_line = utils.read_line;
+const readLine = utils.readLine;
 const tokenizeScalar = std.mem.tokenizeScalar;
 const trim = std.mem.trim;
 const parseInt = std.fmt.parseInt;
@@ -14,7 +14,7 @@ pub fn main() !void {
   var lines = try ArrayList([]u8).initCapacity(arena.allocator(), 200);
   var input: [4096]u8 = undefined;
   while (true) {
-    const line = read_line(&input) catch return;
+    const line = try readLine(&input);
     if (line.len == 0) break;
     var row = try ArrayList(u8).initCapacity(arena.allocator(), line.len);
     row.appendSliceAssumeCapacity(line);
@@ -30,7 +30,7 @@ pub fn main() !void {
     for (lines.items[0..lines.items.len - 1]) |line| {
       var it = tokenizeScalar(u8, line[i..], ' ');
       const p = it.next().?;
-      const v = parseInt(u64, p, 10) catch 0;
+      const v = try parseInt(u64, p, 10);
       values.appendAssumeCapacity(v);
     }
     if (ch == '*') {
@@ -65,7 +65,7 @@ pub fn main() !void {
       if (newLineTrimmed.len == 0) {
         break;
       }
-      const v = parseInt(u64, newLineTrimmed, 10) catch 0;
+      const v = try parseInt(u64, newLineTrimmed, 10);
       try values.append(arena.allocator(), v);
     }
     if (ch == '*') {

@@ -1,7 +1,7 @@
 const std = @import("std");
 const utils = @import("./utils.zig");
 
-const read_line = utils.read_line;
+const readLine = utils.readLine;
 const print = std.debug.print;
 const ArrayList = std.ArrayList;
 const AutoHashMap = std.AutoHashMap;
@@ -137,7 +137,7 @@ pub fn Solution() type {
         }
 
         pub fn countGroups(self: *Self) usize {
-            return self.group2dot.count();
+            return self.group2dot.map.count();
         }
 
         pub fn countDots(self: *Self) usize {
@@ -153,12 +153,12 @@ pub fn main() !void {
     var dots = try ArrayList(Dot).initCapacity(allocator, 1000);
     var input: [4096]u8 = undefined;
     while (true) {
-        const line = read_line(&input) catch return;
+        const line = try readLine(&input);
         if (line.len == 0) break;
         var parts = splitScalar(u8, line, ',');
-        const x = fmt.parseInt(u64, parts.next().?, 10) catch 0;
-        const y = fmt.parseInt(u64, parts.next().?, 10) catch 0;
-        const z = fmt.parseInt(u64, parts.next().?, 10) catch 0;
+        const x = try fmt.parseInt(u64, parts.next().?, 10);
+        const y = try fmt.parseInt(u64, parts.next().?, 10);
+        const z = try fmt.parseInt(u64, parts.next().?, 10);
         dots.appendAssumeCapacity(.{ .x = x, .y = y, .z = z });
     }
     const n = dots.items.len;

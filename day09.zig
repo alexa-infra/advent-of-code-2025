@@ -1,7 +1,7 @@
 const std = @import("std");
 const utils = @import("./utils.zig");
 
-const read_line = utils.read_line;
+const readLine = utils.readLine;
 const parseInt = std.fmt.parseInt;
 const splitScalar = std.mem.splitScalar;
 const print = std.debug.print;
@@ -30,7 +30,7 @@ pub fn main() !void {
     var points = ArrayList(Dot).empty;
     var input: [4096]u8 = undefined;
     while (true) {
-        const line = try read_line(&input);
+        const line = try readLine(&input);
         if (line.len == 0) break;
         var parts = splitScalar(u8, line, ',');
         const x = try parseInt(u64, parts.next().?, 10);

@@ -1,25 +1,11 @@
 const std = @import("std");
+const utils = @import("./utils.zig");
 
 const fmt = std.fmt;
 const print = std.debug.print;
 const splitScalar = std.mem.splitScalar;
 const ArrayList = std.ArrayList;
-
-fn read_line(buffer: []u8) ![]u8 {
-    const stdin = std.fs.File.stdin();
-    var idx: usize = 0;
-
-    while (idx < buffer.len) {
-        var byte: [1]u8 = undefined;
-        const n = stdin.read(&byte) catch break;
-        if (n == 0) break;
-        if (byte[0] == '\n') break;
-        buffer[idx] = byte[0];
-        idx += 1;
-    }
-
-    return buffer[0..idx];
-}
+const readLine = utils.readLine;
 
 pub fn main() !void {
   var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
@@ -31,15 +17,15 @@ pub fn main() !void {
   };
   var ranges = try ArrayList(Pair).initCapacity(arena.allocator(), 200);
   while(true) {
-    const result = read_line(&input) catch break;
+    const result = try readLine(&input);
     if(result.len == 0) {
       break;
     }
     var parts = splitScalar(u8, result, '-');
     const part1 = parts.next().?;
     const part2 = parts.next().?;
-    const p1 = fmt.parseInt(u64, part1, 10) catch 0;
-    const p2 = fmt.parseInt(u64, part2, 10) catch 0;
+    const p1 = try fmt.parseInt(u64, part1, 10);
+    const p2 = try fmt.parseInt(u64, part2, 10);
     try ranges.append(arena.allocator(), .{ .x = p1, .y = p2 });
   }
   outer: while(true) {
@@ -61,11 +47,11 @@ pub fn main() !void {
   }
   var r1: u32 = 0;
   while(true) {
-    const result = read_line(&input) catch break;
+    const result = try readLine(&input);
     if (result.len == 0) {
       break;
     }
-    const p1 = fmt.parseInt(u64, result, 10) catch 0;
+    const p1 = try fmt.parseInt(u64, result, 10);
     for (ranges.items) |range| {
       if (p1 >= range.x and p1 <= range.y) {
         r1 += 1;

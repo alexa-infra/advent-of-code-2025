@@ -1,7 +1,7 @@
 const std = @import("std");
 const utils = @import("./utils.zig");
 
-const read_line = utils.read_line;
+const readLine = utils.readLine;
 const print = std.debug.print;
 const ArrayList = std.ArrayList;
 
@@ -11,7 +11,7 @@ pub fn main() !void {
   var lines = try ArrayList([]u8).initCapacity(arena.allocator(), 200);
   var input: [4096]u8 = undefined;
   while (true) {
-    const line = read_line(&input) catch return;
+    const line = try readLine(&input);
     if (line.len == 0) break;
     var row = try ArrayList(u8).initCapacity(arena.allocator(), line.len);
     row.appendSliceAssumeCapacity(line);
@@ -20,9 +20,9 @@ pub fn main() !void {
   var r1: u64 = 0;
   const n: usize = lines.items.len;
   const m: usize = lines.items[0].len;
-  const state = arena.allocator().alloc(u64, m) catch return;
+  const state = try arena.allocator().alloc(u64, m);
   @memset(state[0..m], 0);
-  var nextState = arena.allocator().alloc(u64, m) catch return;
+  var nextState = try arena.allocator().alloc(u64, m);
   for (lines.items, 0..) |line, i| {
     if (i == n - 1) continue;
     @memset(nextState[0..m], 0);

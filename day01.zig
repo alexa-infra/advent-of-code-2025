@@ -1,23 +1,9 @@
 const std = @import("std");
+const utils = @import("./utils.zig");
 
 const fmt = std.fmt;
 const print = std.debug.print;
-
-fn read_line(buffer: []u8) ![]u8 {
-    const stdin = std.fs.File.stdin();
-    var idx: usize = 0;
-
-    while (idx < buffer.len) {
-        var byte: [1]u8 = undefined;
-        const n = stdin.read(&byte) catch break;
-        if (n == 0) break;
-        if (byte[0] == '\n') break;
-        buffer[idx] = byte[0];
-        idx += 1;
-    }
-
-    return buffer[0..idx];
-}
+const readLine = utils.readLine;
 
 pub fn main() !void {
   var input: [32]u8 = undefined;
@@ -25,11 +11,11 @@ pub fn main() !void {
   var r1: u32 = 0;
   var r2: u32 = 0;
   while(true) {
-    const result = read_line(&input) catch break;
+    const result = try readLine(&input);
     if(result.len == 0) {
       break;
     }
-    var val = fmt.parseInt(u32, result[1..result.len], 10) catch 0;
+    var val = try fmt.parseInt(u32, result[1..result.len], 10);
     r2 += val / 100;
     val = val % 100;
     if (result[0] == 'L') {

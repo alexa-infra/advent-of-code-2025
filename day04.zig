@@ -1,24 +1,10 @@
 const std = @import("std");
+const utils = @import("./utils.zig");
 
 const fmt = std.fmt;
 const print = std.debug.print;
 const ArrayList = std.ArrayList;
-
-fn read_line(buffer: []u8) ![]u8 {
-    const stdin = std.fs.File.stdin();
-    var idx: usize = 0;
-
-    while (idx < buffer.len) {
-        var byte: [1]u8 = undefined;
-        const n = stdin.read(&byte) catch break;
-        if (n == 0) break;
-        if (byte[0] == '\n') break;
-        buffer[idx] = byte[0];
-        idx += 1;
-    }
-
-    return buffer[0..idx];
-}
+const readLine = utils.readLine;
 
 pub fn main() !void {
   var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
@@ -26,7 +12,7 @@ pub fn main() !void {
   var map = try ArrayList([]u8).initCapacity(arena.allocator(), 200);
   var input: [1024]u8 = undefined;
   while(true) {
-    const result = read_line(&input) catch break;
+    const result = try readLine(&input);
     if(result.len == 0) {
       break;
     }
