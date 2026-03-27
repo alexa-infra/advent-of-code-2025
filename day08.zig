@@ -7,6 +7,7 @@ const ArrayList = std.ArrayList;
 const AutoHashMap = std.AutoHashMap;
 const fmt = std.fmt;
 const splitScalar = std.mem.splitScalar;
+const AutoListMap = utils.AutoListMap;
 
 const Dot = struct {
     x: u64,
@@ -40,45 +41,6 @@ fn cmpJoints(ctx: void, left: Joint, right: Joint) bool {
 fn cmpIntReverse(ctx: void, left: usize, right: usize) bool {
     _ = ctx;
     return left > right;
-}
-
-pub fn AutoListMap(comptime K: type, comptime V: type) type {
-    return struct {
-        const Self = @This();
-
-        allocator: std.mem.Allocator,
-        map: std.AutoHashMap(K, std.ArrayListUnmanaged(V)),
-
-        pub fn init(allocator: std.mem.Allocator) Self {
-            return .{
-                .allocator = allocator,
-                .map = std.AutoHashMap(K, std.ArrayListUnmanaged(V)).init(allocator),
-            };
-        }
-
-        pub fn deinit(self: *Self) void {
-            var it = self.map.valueIterator();
-            while (it.next()) |list| {
-                list.deinit(self.allocator);
-            }
-            self.map.deinit();
-        }
-
-        pub fn getOrCreate(self: *Self, key: K) !*std.ArrayListUnmanaged(V) {
-            const entry = try self.map.getOrPut(key);
-
-            if (!entry.found_existing) {
-                entry.value_ptr.* = .{};
-            }
-
-            return entry.value_ptr;
-        }
-
-        pub fn append(self: *Self, key: K, value: V) !void {
-            var list = try self.getOrCreate(key);
-            try list.append(self.allocator, value);
-        }
-    };
 }
 
 pub fn Solution() type {
